@@ -1,0 +1,40 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Sep 17 23:59:38 2018
+
+@author: chira
+"""
+from sklearn.model_selection import train_test_split
+from matplotlib import pyplot as plt
+from sklearn import metrics
+from sklearn import datasets
+import numpy as np
+
+# import some data to play with
+iris = datasets.load_iris()
+input = iris.data[:, :4]  # we take the first 4 features.
+output = iris.target  # last feature is our target
+l = np.ones((150,1))  #creating a 150x1 matrix having values 1
+F= np.hstack((l,input))  # Matrix l is appended to matrix F
+y = np.matrix(output).T
+
+# create training and testing vars
+X_train, X_test, y_train, y_test = train_test_split(F, y, test_size=0.3)
+print("We split the dataset into 2 parts: 70% Training and 30% Testing")
+print (X_train.shape, y_train.shape)
+print (X_test.shape, y_test.shape)
+
+p_mat = np.linalg.inv(X_train.T.dot(X_train)).dot(X_train.T).dot(y_train)
+print("The regression co-efficients are:")
+print (p_mat)
+
+print("Predictions:")
+New=(X_test.dot(p_mat))
+print(New)
+
+print("The root mean squared error is:")
+print(np.sqrt(metrics.mean_squared_error(y_test, New)))
+
+print("Graph: Predicted output(Blue) v/s Expected output(Red)")
+plt.plot(New)
+plt.plot(y_test,color='#ef1234')
